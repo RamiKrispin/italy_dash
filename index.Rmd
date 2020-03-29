@@ -2,13 +2,25 @@
 title: "Covid19 Italy"
 output: 
   flexdashboard::flex_dashboard:
+    css: style.css
     orientation: columns
     vertical_layout: fill
 ---
 
 ```{r setup, include=FALSE}
+#------------------ Packages ------------------
 library(flexdashboard)
 library(covid19italy)
+`%>%` <- magrittr::`%>%`
+#------------------ Parameters ------------------
+# Set colors
+# https://www.w3.org/TR/css-color-3/#svg-color
+tested_color <- "purple"
+positive_color <- "#1f77b4"
+recovered_color <- "forestgreen"
+death_color <- "red"
+
+
 `%>%` <- magrittr::`%>%`
 italy_map_region <- rnaturalearth::ne_states(country = "Italy", returnclass = "sf") %>%
   dplyr::select(province = name, region, geometry) %>%
@@ -18,32 +30,187 @@ italy_map_region <- rnaturalearth::ne_states(country = "Italy", returnclass = "s
               dplyr::filter(date == max(date)), # subseting for the most recent day
             by = c("region" = "region_spatial"))
 
+
+
+
+italy_total_last <- italy_total %>% dplyr::filter(date == max(date))
+
 ```
 
-Column {data-width=400}
+
+
+Summary
+=======================================================================
+Column { data-width=200 }
+-----------------------------------------------------------------------
+### tested {.value-box}
+```{r}
+valueBox(value = paste(format(italy_total_last$total_tests, big.mark = ","), "", sep = " "), 
+         caption = "Total Tested Cases", 
+         icon = "fas fa-user-md", 
+         color = tested_color)
+```
+
+
+
+### confirmed {.value-box}
+
+```{r}
+valueBox(value = paste(format(italy_total_last$total_positive_cases, big.mark = ","), "", sep = " "), 
+         caption = "Total Positive Cases", 
+         icon = "fas fa-ambulance", 
+         color = positive_color)
+```
+
+
+### active {.value-box}
+```{r}
+valueBox(value = paste(format(italy_total_last$total_currently_positive, big.mark = ","), sep = ""),
+         caption = "Active Cases", 
+         icon = "fas fa-heartbeat", 
+         color = recovered_color)
+```
+
+
+### recovered {.value-box}
+```{r}
+valueBox(value = paste(format(italy_total_last$recovered, big.mark = ","), sep = ""),
+         caption = "Recovered Cases", 
+         icon = "fas fa-heartbeat", 
+         color = recovered_color)
+```
+
+### death {.value-box}
+```{r}
+valueBox(value = paste(format(italy_total_last$death, big.mark = ","), sep = ""),
+         caption = "Death Cases", 
+         icon = "fas fa-heartbeat", 
+         color = death_color)
+```
+
+Column { data-width=400 }
 -----------------------------------------------------------------------
 
-### Chart A
+### Distribution of Active Cases
+
+```{r}
+plotly::plot_ly(data = italy_total,
+        x = ~ date,
+        y = ~home_confinement, 
+        name = 'Home Confinement', 
+        fillcolor = '#FDBBBC',
+        type = 'scatter',
+        mode = 'none', 
+        stackgroup = 'one') %>%
+  plotly::add_trace( y = ~ hospitalized_with_symptoms, 
+             name = "Hospitalized with Symptoms",
+             fillcolor = '#E41317') %>%
+  plotly::add_trace(y = ~intensive_care, 
+                name = 'Intensive Care', 
+                fillcolor = '#9E0003') %>%
+  plotly::layout(title = "",
+         legend = list(x = 0.1, y = 0.9),
+         yaxis = list(title = "Number of Cases"),
+         xaxis = list(title = "Source: Italy Department of Civil Protection"),
+         hovermode = "compared")
+```
+
+
+
+### chart2
+
+
+
+Column { data-width=400 }
+-----------------------------------------------------------------------
+
+### Overall Distribution of Cases
+
+```{r}
+plotly::plot_ly(data = italy_total,
+        x = ~ date,
+        y = ~total_currently_positive, 
+        name = 'Active', 
+        fillcolor = '#1f77b4',
+        type = 'scatter',
+        mode = 'none', 
+        stackgroup = 'one') %>%
+  plotly::add_trace( y = ~ death, 
+             name = "Death",
+             fillcolor = '#E41317') %>%
+  plotly::add_trace(y = ~recovered, 
+            name = 'Recovered', 
+            fillcolor = 'forestgreen') %>%
+  plotly::layout(title = "",
+         legend = list(x = 0.1, y = 0.9),
+         yaxis = list(title = "Number of Cases"),
+         xaxis = list(title = "Source: Italy Department of Civil Protection"),
+         hovermode = "compared")
+```
+
+
+### chart4
+
+
+
+Region
+=======================================================================
+
+Column { data-width=500 }
+-----------------------------------------------------------------------
+
+### Total Number of Cases by Region (as of `r max(italy_region$date)`)
 
 ```{r}
 italy_map_region %>% 
-  mapview::mapview(zcol = "total_tests") #%>%
+  mapview::mapview(zcol = "total_positive_cases") #%>%
   # leaflet::setView(lng =  12.49, lat = 41.9, zoom = 14)
 ```
 
-Column {data-width=600}
+Column { data-width=500 }
 -----------------------------------------------------------------------
 
-### Chart B
+### Cases Distribution by Region
 
 ```{r}
-
+italy_region %>% 
+  dplyr::filter(date == max(date)) %>% 
+  dplyr::select(region_name, total_currently_positive, recovered, death, total_positive_cases) %>%
+  dplyr::arrange(-total_positive_cases) %>%
+  dplyr::mutate(region = factor(region_name, levels = region_name)) %>%
+  plotly::plot_ly(y = ~ region, 
+          x = ~ total_currently_positive, 
+          orientation = 'h',
+          text =  ~ total_currently_positive,
+          textposition = 'auto',
+          type = "bar", 
+          name = "Active",
+          marker = list(color = "#1f77b4")) %>%
+  plotly::add_trace(x = ~ recovered,
+            text =  ~ recovered,
+            textposition = 'auto',
+            name = "Recovered",
+            marker = list(color = "forestgreen")) %>%
+  plotly::add_trace(x = ~ death, 
+            text =  ~ death,
+            textposition = 'auto',
+            name = "Death",
+            marker = list(color = "red")) %>%
+  plotly::layout(title = "",
+         barmode = 'stack',
+         yaxis = list(title = "Region"),
+         xaxis = list(title = "Number of Cases"),
+         hovermode = "compare",
+         legend = list(x = 0.65, y = 0.9),
+         margin =  list(
+           l = 20,
+           r = 10,
+           b = 10,
+           t = 30,
+           pad = 2
+         ))
 ```
 
-### Chart C
 
-```{r}
-
-```
 
 
