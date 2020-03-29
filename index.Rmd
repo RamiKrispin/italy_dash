@@ -16,9 +16,12 @@ library(covid19italy)
 # Set colors
 # https://www.w3.org/TR/css-color-3/#svg-color
 tested_color <- "purple"
-positive_color <- "#1f77b4"
+active_color <- "#1f77b4"
 recovered_color <- "forestgreen"
-death_color <- "red"
+death_color <- "#E41317"
+intensive_care_color <- "#9E0003"
+h_symptoms_color <- "#E41317"
+home_conf_color <- "#FDBBBC"
 
 
 `%>%` <- magrittr::`%>%`
@@ -35,13 +38,116 @@ italy_map_region <- rnaturalearth::ne_states(country = "Italy", returnclass = "s
 
 italy_total_last <- italy_total %>% dplyr::filter(date == max(date))
 
+
+italy_total <- italy_total %>% 
+  dplyr::arrange(date) %>%
+  dplyr::mutate(tested_daily = total_tests - dplyr::lag(total_tests, n = 1)) %>%
+  dplyr::mutate(new_cases_smooth = (dplyr::lag(new_currently_positive, n = 1) +
+                                    dplyr::lag(new_currently_positive, n = 2) +
+                                    dplyr::lag(new_currently_positive, n = 3) +
+                                    dplyr::lag(new_currently_positive, n = 4) +
+                                    dplyr::lag(new_currently_positive, n = 5)) / 5)
+
+italy_total$tested_daily[1] <- italy_total$total_tests[1]
+
+
+
+
+#------------trajectory plot data prep------------
+library(coronavirus)
+data(coronavirus)
+
+df_china <- coronavirus %>% dplyr::filter(type == "confirmed", Country.Region == "China") %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(cases = sum(cases)) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(date) %>%
+  dplyr::mutate(china = cumsum(cases)) %>%
+  dplyr::filter(china > 100)  %>%
+  dplyr::select(-cases, -date)
+
+df_china$index <- 1:nrow(df_china)
+head(df_china)
+
+
+df_us <- coronavirus %>% dplyr::filter(type == "confirmed", Country.Region == "US") %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(cases = sum(cases)) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(date) %>%
+  dplyr::mutate(us = cumsum(cases)) %>%
+  dplyr::filter(us > 100)  %>%
+  dplyr::select(-cases, -date)
+
+
+df_us$index <- 1:nrow(df_us)
+head(df_us)
+
+df_iran <- coronavirus %>% dplyr::filter(type == "confirmed", Country.Region == "Iran") %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(cases = sum(cases)) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(date) %>%
+  dplyr::mutate(iran = cumsum(cases)) %>%
+  dplyr::filter(iran > 100)  %>%
+  dplyr::select(-cases, -date)
+
+df_iran$index <- 1:nrow(df_iran)
+head(df_iran)
+
+
+df_sk <- coronavirus %>% dplyr::filter(type == "confirmed", Country.Region == "Korea, South") %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(cases = sum(cases)) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(date) %>%
+  dplyr::mutate(sk = cumsum(cases)) %>%
+  dplyr::filter(sk > 100)  %>%
+  dplyr::select(-cases, -date)
+
+df_sk$index <- 1:nrow(df_sk)
+head(df_sk)
+
+
+df_spain <- coronavirus %>% dplyr::filter(type == "confirmed", Country.Region == "Spain") %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(cases = sum(cases)) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(date) %>%
+  dplyr::mutate(spain = cumsum(cases)) %>%
+  dplyr::filter(spain > 100)  %>%
+  dplyr::select(-cases, -date)
+
+df_spain$index <- 1:nrow(df_spain)
+head(df_spain)
+
+
+df_italy <- italy_total %>% dplyr::select(date, italy = total_positive_cases) %>%
+  dplyr::filter(italy > 100) %>%
+  dplyr::select(-date)
+df_italy$index <- 1:nrow(df_italy)
+head(df_italy)
+
+df_trajectory <- df_china %>% 
+  dplyr::left_join(df_italy, by = "index") %>%
+  dplyr::left_join(df_iran, by = "index") %>%
+  dplyr::left_join(df_sk, by = "index") %>%
+  dplyr::left_join(df_us, by = "index") %>%
+  dplyr::left_join(df_spain, by = "index")
+
+
+
+
+
+
+
 ```
 
 
 
 Summary
 =======================================================================
-Column { data-width=200 }
+Column { data-width=150 }
 -----------------------------------------------------------------------
 ### tested {.value-box}
 ```{r}
@@ -53,24 +159,23 @@ valueBox(value = paste(format(italy_total_last$total_tests, big.mark = ","), "",
 
 
 
-### confirmed {.value-box}
+### Positive Cases {.value-box}
 
 ```{r}
 valueBox(value = paste(format(italy_total_last$total_positive_cases, big.mark = ","), "", sep = " "), 
          caption = "Total Positive Cases", 
-         icon = "fas fa-ambulance", 
-         color = positive_color)
+         icon = "far fa-plus-square", 
+         color = active_color)
 ```
 
 
-### active {.value-box}
+### Active {.value-box}
 ```{r}
 valueBox(value = paste(format(italy_total_last$total_currently_positive, big.mark = ","), sep = ""),
          caption = "Active Cases", 
-         icon = "fas fa-heartbeat", 
-         color = recovered_color)
+         icon = "fas fa-ambulance",
+         color = active_color)
 ```
-
 
 ### recovered {.value-box}
 ```{r}
@@ -80,15 +185,35 @@ valueBox(value = paste(format(italy_total_last$recovered, big.mark = ","), sep =
          color = recovered_color)
 ```
 
+### Hospitalized with Symptoms {.value-box}
+```{r}
+valueBox(value = paste(format(italy_total_last$hospitalized_with_symptoms, big.mark = ","), sep = ""),
+         caption = "Hospitalized with Symptoms", 
+         icon = "fas fa-hospital", 
+         color = h_symptoms_color)
+```
+
+### Intensive Care {.value-box}
+```{r}
+valueBox(value = paste(format(italy_total_last$intensive_care, big.mark = ","), sep = ""),
+         caption = "Intensive Care", 
+         icon = "fas fa-procedures", 
+         color = intensive_care_color)
+```
+
+
+
+
+
 ### death {.value-box}
 ```{r}
 valueBox(value = paste(format(italy_total_last$death, big.mark = ","), sep = ""),
          caption = "Death Cases", 
-         icon = "fas fa-heartbeat", 
+         icon = "", 
          color = death_color)
 ```
 
-Column { data-width=400 }
+Column { data-width=425 }
 -----------------------------------------------------------------------
 
 ### Distribution of Active Cases
@@ -117,11 +242,31 @@ plotly::plot_ly(data = italy_total,
 
 
 
-### chart2
+### Daily New Cases
+
+```{r}
+plotly::plot_ly(data = italy_total,
+                x = ~ date,
+                y = ~ new_currently_positive,
+                type = "scatter",
+                mode = "markers",
+                name = "Positive Cases") %>%
+  plotly::add_lines(x = ~ date, 
+                    y = ~ new_cases_smooth,
+                    line = list(color = "red", width = 3),
+                    name = "Trend Line") %>%
+  plotly::layout(title = "",
+                 legend = list(x = 0.1, y = 0.9),
+                 yaxis = list(title = "Number of Cases"),
+                 xaxis = list(title = "Using 5 days trailing moving average to calculate the trend line"),
+                 hovermode = "compare")
+  
+```
 
 
 
-Column { data-width=400 }
+
+Column { data-width=425 }
 -----------------------------------------------------------------------
 
 ### Overall Distribution of Cases
@@ -149,8 +294,34 @@ plotly::plot_ly(data = italy_total,
 ```
 
 
-### chart4
+### Trajectory Plot - comparsone of Italy with major countries (with respect of confirmed cases)
 
+```{r}
+plotly::plot_ly(data = df_trajectory) %>%
+  plotly::add_lines(x = ~ index,
+                    y = ~ china,
+                    name = "China") %>%
+  plotly::add_lines(x = ~ index,
+                    y = ~ italy,
+                    line = list(width = 4),
+                    name = "Italy") %>%
+  plotly::add_lines(x = ~ index,
+                    y = ~ us,
+                    name = "United States") %>%
+  plotly::add_lines(x = ~ index,
+                    y = ~ iran,
+                    name = "Iran") %>%
+  plotly::add_lines(x = ~ index,
+                    y = ~ sk,
+                    name = "South Korea") %>%
+  plotly::add_lines(x = ~ index,
+                    y = ~ spain,
+                    name = "Spain") %>%
+  plotly::layout(yaxis = list(title = "Cumulative Positive Cases",type = "log"),
+                 xaxis = list(title = "Days since total the cumulative positive cases surpass 100"))
+
+
+```
 
 
 Region
