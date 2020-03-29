@@ -8,6 +8,16 @@ output:
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+library(covid19italy)
+`%>%` <- magrittr::`%>%`
+italy_map_region <- rnaturalearth::ne_states(country = "Italy", returnclass = "sf") %>%
+  dplyr::select(province = name, region, geometry) %>%
+  dplyr::group_by(region) %>%
+  dplyr::summarise(n = dplyr::n()) %>%
+  dplyr::left_join(italy_region %>% 
+              dplyr::filter(date == max(date)), # subseting for the most recent day
+            by = c("region" = "region_spatial"))
+
 ```
 
 Column {data-width=650}
@@ -16,7 +26,8 @@ Column {data-width=650}
 ### Chart A
 
 ```{r}
-
+italy_map_region %>% 
+  mapview::mapview(zcol = "total_tests")
 ```
 
 Column {data-width=350}
