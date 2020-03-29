@@ -20,17 +20,18 @@ italy_map_region <- rnaturalearth::ne_states(country = "Italy", returnclass = "s
 
 ```
 
-Column {data-width=650}
+Column {data-width=400}
 -----------------------------------------------------------------------
 
 ### Chart A
 
 ```{r}
 italy_map_region %>% 
-  mapview::mapview(zcol = "total_tests")
+  mapview::mapview(zcol = "total_tests") #%>%
+  # leaflet::setView(lng =  12.49, lat = 41.9, zoom = 14)
 ```
 
-Column {data-width=350}
+Column {data-width=600}
 -----------------------------------------------------------------------
 
 ### Chart B
