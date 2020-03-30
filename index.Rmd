@@ -16,6 +16,7 @@ library(covid19italy)
 # Set colors
 # https://www.w3.org/TR/css-color-3/#svg-color
 tested_color <- "purple"
+positive_color <- RColorBrewer::brewer.pal(9, "PuRd")[7]
 active_color <- "#1f77b4"
 recovered_color <- "forestgreen"
 death_color <- "#E41317"
@@ -165,7 +166,7 @@ valueBox(value = paste(format(italy_total_last$total_tests, big.mark = ","), "",
 valueBox(value = paste(format(italy_total_last$total_positive_cases, big.mark = ","), "", sep = " "), 
          caption = "Total Positive Cases", 
          icon = "far fa-plus-square", 
-         color = active_color)
+         color = positive_color)
 ```
 
 
@@ -294,26 +295,26 @@ plotly::plot_ly(data = italy_total,
 ```
 
 
-### Trajectory Plot - comparsone of Italy with major countries (with respect of confirmed cases)
+### Trajectory Plot - Italy vs. major countries (with respect of confirmed cases)
 
 ```{r}
 plotly::plot_ly(data = df_trajectory) %>%
   plotly::add_lines(x = ~ index,
                     y = ~ china,
-                    name = "China") %>%
+                    name = "China",  line = list(width = 1)) %>%
   plotly::add_lines(x = ~ index,
                     y = ~ italy,
-                    line = list(width = 4),
+                    line = list(color = "red", width = 4),
                     name = "Italy") %>%
   plotly::add_lines(x = ~ index,
                     y = ~ us,
-                    name = "United States") %>%
+                    name = "United States",  line = list(width = 1)) %>%
   plotly::add_lines(x = ~ index,
                     y = ~ iran,
-                    name = "Iran") %>%
+                    name = "Iran",  line = list(color = "orange", width = 1)) %>%
   plotly::add_lines(x = ~ index,
                     y = ~ sk,
-                    name = "South Korea") %>%
+                    name = "South Korea",  line = list(width = 1)) %>%
   plotly::add_lines(x = ~ index,
                     y = ~ spain,
                     name = "Spain") %>%
@@ -382,6 +383,52 @@ italy_region %>%
          ))
 ```
 
+Data
+=======================================================================
+
+```{r}
+italy_total %>% 
+  dplyr::select(-tested_daily, - new_cases_smooth) %>%
+  DT::datatable(rownames = FALSE,
+                colnames = c("Date", "Hospitalized with Symptoms", "Intensive Care", "Total Hospitalized", "Home Confinement", "Total Currently Positive", "New Currently Positive",
+                             "Recovered", "Death",  "Total Positive Cases", "Total Tests"),
+            options = list(searchHighlight = TRUE, 
+                           pageLength = nrow(italy_total)), filter = 'top')
+```
+
+
+
+About
+=======================================================================
+
+**The Coronavirus Dashboard**
+
+This Covid19 Italy dashboard provides an overview of the 2019 Novel Coronavirus COVID-19 (2019-nCoV) outbreak at Italy. This dashboard is built with R using the Rmakrdown framework and can easily reproduce by others. The code behind the dashboard available [here](https://github.com/RamiKrispin/italy_dash)
+
+**Data**
+
+The input data for this dashboard are the [covis19italy](https://github.com/RamiKrispin/covis19italy) and [coronavirus](https://github.com/RamiKrispin/coronavirus) R packages (dev version). The data and dashboard are refreshed on a daily bases. 
+
+**Data source**
+
+The raw data for the covid19italy package is pulled from Italy Department of Civil Protection, and the coronavirus package from Johns Hopkins University Center for Systems Science and Engineering (JHU CCSE)
+
+**Packages**
+
+* Dashboard interface - the [flexdashboard](https://rmarkdown.rstudio.com/flexdashboard/) package. 
+* Visualization - the [plotly](https://plot.ly/r/) package for the plots and [mapview](https://r-spatial.github.io/mapview/) package for the map 
+* Data manipulation - [dplyr](https://dplyr.tidyverse.org/), and [tidyr](https://tidyr.tidyverse.org/)
+* Tables - the [DT](https://rstudio.github.io/DT/) package
+
+**Deployment and reproducibly**
+
+The dashboard was deployed to Github docs. If you wish to deploy and/or modify the dashboard on your Github account, you can apply the following steps:
+
+* Fork the dashboard [repository](https://github.com/RamiKrispin/coronavirus_dashboard), or
+* Clone it and push it to your Github package
+* Here some general guidance about deployment of flexdashboard on Github page - [link](https://github.com/pbatey/flexdashboard-example)
+
+For any question or feedback, you can either open an [issue](https://github.com/RamiKrispin/coronavirus_dashboard/issues) or contact me on [Twitter](https://twitter.com/Rami_Krispin).
 
 
 
