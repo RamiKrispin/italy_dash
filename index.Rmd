@@ -12,6 +12,8 @@ output:
 ```{r setup, include=FALSE}
 #------------------ Packages ------------------
 library(flexdashboard)
+
+### Required the dev version from Github until the next release to CRAN
 library(covid19italy)
 `%>%` <- magrittr::`%>%`
 #------------------ Parameters ------------------
