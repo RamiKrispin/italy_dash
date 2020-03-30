@@ -45,7 +45,7 @@ modify the dashboard on your Github account, you can apply the following
 steps:
 
   - Fork the dashboard
-    \[repository\](<https://github.com/RamiKrispin/italy_dash>, or
+    [repository](https://github.com/RamiKrispin/italy_dash), or
   - Clone it and push it to your Github package
   - Here some general guidance about deployment of flexdashboard on
     Github page -
