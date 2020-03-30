@@ -427,7 +427,7 @@ The raw data for the covid19italy package is pulled from Italy Department of Civ
 
 The dashboard was deployed to Github docs. If you wish to deploy and/or modify the dashboard on your Github account, you can apply the following steps:
 
-* Fork the dashboard [repository](https://github.com/RamiKrispin/italy_dash, or
+* Fork the dashboard [repository](https://github.com/RamiKrispin/italy_dash), or
 * Clone it and push it to your Github package
 * Here some general guidance about deployment of flexdashboard on Github page - [link](https://github.com/pbatey/flexdashboard-example)
 
