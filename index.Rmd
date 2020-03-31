@@ -47,11 +47,11 @@ italy_total_last <- italy_total %>% dplyr::filter(date == max(date))
 italy_total <- italy_total %>% 
   dplyr::arrange(date) %>%
   dplyr::mutate(tested_daily = total_tests - dplyr::lag(total_tests, n = 1)) %>%
-  dplyr::mutate(new_cases_smooth = (dplyr::lag(new_currently_positive, n = 1) +
+  dplyr::mutate(new_cases_smooth = (new_currently_positive +
+                                    dplyr::lag(new_currently_positive, n = 1) +
                                     dplyr::lag(new_currently_positive, n = 2) +
                                     dplyr::lag(new_currently_positive, n = 3) +
-                                    dplyr::lag(new_currently_positive, n = 4) +
-                                    dplyr::lag(new_currently_positive, n = 5)) / 5)
+                                    dplyr::lag(new_currently_positive, n = 4)) / 5)
 
 italy_total$tested_daily[1] <- italy_total$total_tests[1]
 
@@ -412,7 +412,7 @@ This Covid19 Italy dashboard provides an overview of the 2019 Novel Coronavirus 
 
 **Data**
 
-The input data for this dashboard are the [covis19italy](https://github.com/RamiKrispin/covis19italy) and [coronavirus](https://github.com/RamiKrispin/coronavirus) R packages (dev version). The data and dashboard are refreshed on a daily bases. 
+The input data for this dashboard are the [covis19italy](https://github.com/RamiKrispin/covid19italy) and [coronavirus](https://github.com/RamiKrispin/coronavirus) R packages (dev version). The data and dashboard are refreshed on a daily bases. 
 
 **Data source**
 
