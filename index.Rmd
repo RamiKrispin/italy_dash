@@ -47,11 +47,11 @@ italy_total_last <- italy_total %>% dplyr::filter(date == max(date))
 italy_total <- italy_total %>% 
   dplyr::arrange(date) %>%
   dplyr::mutate(tested_daily = total_tests - dplyr::lag(total_tests, n = 1)) %>%
-  dplyr::mutate(new_cases_smooth = (new_currently_positive +
-                                    dplyr::lag(new_currently_positive, n = 1) +
-                                    dplyr::lag(new_currently_positive, n = 2) +
-                                    dplyr::lag(new_currently_positive, n = 3) +
-                                    dplyr::lag(new_currently_positive, n = 4)) / 5)
+  dplyr::mutate(new_cases_smooth = (daily_positive_cases +
+                                    dplyr::lag(daily_positive_cases, n = 1) +
+                                    dplyr::lag(daily_positive_cases, n = 2) +
+                                    dplyr::lag(daily_positive_cases, n = 3) +
+                                    dplyr::lag(daily_positive_cases, n = 4)) / 5)
 
 italy_total$tested_daily[1] <- italy_total$total_tests[1]
 
@@ -127,7 +127,7 @@ df_spain$index <- 1:nrow(df_spain)
 head(df_spain)
 
 
-df_italy <- italy_total %>% dplyr::select(date, italy = total_positive_cases) %>%
+df_italy <- italy_total %>% dplyr::select(date, italy = cumulative_cases) %>%
   dplyr::filter(italy > 100) %>%
   dplyr::select(-date)
 df_italy$index <- 1:nrow(df_italy)
@@ -167,7 +167,7 @@ valueBox(value = paste(format(italy_total_last$total_tests, big.mark = ","), "",
 ### Positive Cases {.value-box}
 
 ```{r}
-valueBox(value = paste(format(italy_total_last$total_positive_cases, big.mark = ","), "", sep = " "), 
+valueBox(value = paste(format(italy_total_last$cumulative_cases, big.mark = ","), "", sep = " "), 
          caption = "Total Positive Cases", 
          icon = "far fa-plus-square", 
          color = positive_color)
@@ -176,7 +176,7 @@ valueBox(value = paste(format(italy_total_last$total_positive_cases, big.mark = 
 
 ### Active {.value-box}
 ```{r}
-valueBox(value = paste(format(italy_total_last$total_currently_positive, big.mark = ","), sep = ""),
+valueBox(value = paste(format(italy_total_last$cumulative_positive_cases, big.mark = ","), sep = ""),
          caption = "Active Cases", 
          icon = "fas fa-ambulance",
          color = active_color)
@@ -252,7 +252,7 @@ plotly::plot_ly(data = italy_total,
 ```{r}
 plotly::plot_ly(data = italy_total,
                 x = ~ date,
-                y = ~ new_currently_positive,
+                y = ~ daily_positive_cases,
                 type = "scatter",
                 mode = "markers",
                 name = "Positive Cases") %>%
@@ -279,7 +279,7 @@ Column { data-width=425 }
 ```{r}
 plotly::plot_ly(data = italy_total,
         x = ~ date,
-        y = ~total_currently_positive, 
+        y = ~cumulative_positive_cases, 
         name = 'Active', 
         fillcolor = '#1f77b4',
         type = 'scatter',
@@ -340,7 +340,7 @@ Column { data-width=500 }
 
 ```{r}
 italy_map_region %>% 
-  mapview::mapview(zcol = "total_positive_cases") #%>%
+  mapview::mapview(zcol = "cumulative_cases") #%>%
   # leaflet::setView(lng =  12.49, lat = 41.9, zoom = 14)
 ```
 
@@ -352,13 +352,13 @@ Column { data-width=500 }
 ```{r}
 italy_region %>% 
   dplyr::filter(date == max(date)) %>% 
-  dplyr::select(region_name, total_currently_positive, recovered, death, total_positive_cases) %>%
-  dplyr::arrange(-total_positive_cases) %>%
+  dplyr::select(region_name, cumulative_positive_cases, recovered, death, cumulative_cases) %>%
+  dplyr::arrange(-cumulative_cases) %>%
   dplyr::mutate(region = factor(region_name, levels = region_name)) %>%
   plotly::plot_ly(y = ~ region, 
-          x = ~ total_currently_positive, 
+          x = ~ cumulative_positive_cases, 
           orientation = 'h',
-          text =  ~ total_currently_positive,
+          text =  ~ cumulative_positive_cases,
           textposition = 'auto',
           type = "bar", 
           name = "Active",
