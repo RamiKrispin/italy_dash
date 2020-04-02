@@ -35,7 +35,9 @@ italy_map_region <- rnaturalearth::ne_states(country = "Italy", returnclass = "s
   dplyr::group_by(region) %>%
   dplyr::summarise(n = dplyr::n()) %>%
   dplyr::left_join(italy_region %>% 
-              dplyr::filter(date == max(date)), # subseting for the most recent day
+              dplyr::filter(date == max(date)) %>%
+                dplyr::group_by(region_spatial) %>%
+                dplyr::summarise(cumulative_cases = sum(cumulative_cases)), # subseting for the most recent day
             by = c("region" = "region_spatial"))
 
 
@@ -352,9 +354,15 @@ Column { data-width=500 }
 ```{r}
 italy_region %>% 
   dplyr::filter(date == max(date)) %>% 
-  dplyr::select(region_name, cumulative_positive_cases, recovered, death, cumulative_cases) %>%
+  dplyr::select(region_spatial, cumulative_positive_cases, recovered, death, cumulative_cases) %>%
+  dplyr::group_by(region_spatial) %>%
+  dplyr::summarise(cumulative_positive_cases = sum(cumulative_positive_cases),
+                   recovered = sum(recovered),
+                   death = sum(death),
+                   cumulative_cases = sum(cumulative_cases)) %>%
+  dplyr::ungroup() %>%
   dplyr::arrange(-cumulative_cases) %>%
-  dplyr::mutate(region = factor(region_name, levels = region_name)) %>%
+  dplyr::mutate(region = factor(region_spatial , levels = region_spatial)) %>%
   plotly::plot_ly(y = ~ region, 
           x = ~ cumulative_positive_cases, 
           orientation = 'h',
