@@ -24,8 +24,18 @@ jobs:
           brew install pandoc
           #brew install pandoc-citeproc
       - name: Install CRAN packages
-        run: Rscript -e "install.packages(c('devtools', 'rmarkdown', 'flexdashboard', 'dplyr', 'plotly', 'mapview', 'rnaturalearth', 'sp', 'rgeos'))"
-      - name: Install rnaturalearth
+        run: Rscript -e "install.packages(c('devtools', 'rmarkdown', 'flexdashboard', 'dplyr', 'rnaturalearth',  ))"
+      - name: install plotly
+        run:  Rscript -e "install.packages('plotly')"
+      - name: install rnaturalearth
+        run:  Rscript -e "install.packages('rnaturalearth')"
+      - name: Install mapview
+        run: Rscript -e "install.packages('mapview')"
+      - name: Install sp
+        run: Rscript -e "install.packages('sp')"
+      - name: Install rgeos
+        run: Rscript -e "install.packages('rgeos')"
+      - name: Install rnaturalearthhires
         run: Rscript -e "install.packages('rnaturalearthhires', repos = 'http://packages.ropensci.org', type = 'source')"
       - name: Install Github packages
         run: Rscript -e "devtools::install_github('Covid19R/covid19Italy')" -e "devtools::install_github('Covid19R/coronavirus')"
