@@ -340,7 +340,7 @@ Column { data-width=500 }
 
 ### Total Number of Cases by Region (as of `r max(italy_region$date)`)
 
-```{r}
+```{r map}
 italy_map_region %>% 
   mapview::mapview(zcol = "cumulative_cases") #%>%
   # leaflet::setView(lng =  12.49, lat = 41.9, zoom = 14)
