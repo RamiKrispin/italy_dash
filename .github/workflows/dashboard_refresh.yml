@@ -29,6 +29,8 @@ jobs:
         run:  Rscript -e "install.packages('plotly')"
       - name: install rnaturalearth
         run:  Rscript -e "install.packages('rnaturalearth',  type = 'source')"
+      - name: install leafpop
+        run:  Rscript -e "install.packages('leafpop',  type = 'source')"
       - name: Install mapview
         run: Rscript -e "install.packages('mapview', type = 'source')"
       - name: Install sp
