@@ -24,7 +24,7 @@ jobs:
           brew install pandoc
           #brew install pandoc-citeproc
       - name: Install CRAN packages
-        run: Rscript -e "install.packages(c('devtools', 'rmarkdown', 'flexdashboard', 'dplyr', 'rnaturalearth',  ))"
+        run: Rscript -e "install.packages(c('devtools', 'rmarkdown', 'flexdashboard', 'dplyr', 'rnaturalearth'))"
       - name: install plotly
         run:  Rscript -e "install.packages('plotly')"
       - name: install rnaturalearth
