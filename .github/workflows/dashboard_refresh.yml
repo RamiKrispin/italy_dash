@@ -24,7 +24,7 @@ jobs:
           brew install pandoc
           #brew install pandoc-citeproc
       - name: Install rnaturalearth
-        run: Rscript -e "install.packages("rnaturalearthhires", repos = "http://packages.ropensci.org", type = "source")"
+        run: Rscript -e "install.packages('rnaturalearthhires', repos = 'http://packages.ropensci.org', type = 'source')"
       - name: Install CRAN packages
         run: Rscript -e "install.packages(c('devtools', 'rmarkdown', 'flexdashboard', 'dplyr', 'plotly', 'mapview', 'rnaturalearth'))"
       - name: Install Github packages
