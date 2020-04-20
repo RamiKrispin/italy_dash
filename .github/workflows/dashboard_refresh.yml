@@ -22,6 +22,7 @@ jobs:
       - name: Install pandoc 
         run: |
           brew install pandoc
+          brew install xquartz 
           #brew install pandoc-citeproc
       - name: Install CRAN packages
         run: Rscript -e "install.packages(c('devtools', 'rmarkdown', 'flexdashboard', 'dplyr', 'rnaturalearth'))"
