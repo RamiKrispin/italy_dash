@@ -32,7 +32,7 @@ jobs:
       - name: install leafpop
         run:  Rscript -e "install.packages('leafpop',  type = 'source')"
       - name: Install mapview
-        run: Rscript -e "install.packages('mapview', type = 'source')"
+        run: Rscript -e "devtools::install_github('r-spatial/mapview@develop')"
       - name: Install sp
         run: Rscript -e "install.packages('sp', type = 'source')"
       - name: Install rgeos
