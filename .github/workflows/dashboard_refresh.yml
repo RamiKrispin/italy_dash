@@ -22,6 +22,7 @@ jobs:
       - name: Install pandoc 
         run: |
           brew install pandoc
+          brew install xquartz 
           #brew install pandoc-citeproc
       - name: Install CRAN packages
         run: Rscript -e "install.packages(c('devtools', 'rmarkdown', 'flexdashboard', 'dplyr', 'rnaturalearth'))"
@@ -30,13 +31,13 @@ jobs:
       - name: install rnaturalearth
         run:  Rscript -e "install.packages('rnaturalearth',  type = 'source')"
       - name: install leafpop
-        run:  Rscript -e "install.packages('leafpop',  type = 'source')"
+        run:  Rscript -e "install.packages('leafpop')"
       - name: Install mapview
-        run: Rscript -e "install.packages('mapview', type = 'source')"
+        run: Rscript -e "devtools::install_github('r-spatial/mapview@develop')"
       - name: Install sp
         run: Rscript -e "install.packages('sp', type = 'source')"
       - name: Install rgeos
-        run: Rscript -e "install.packages('rgeos', type = 'source')"
+        run: Rscript -e "install.packages('rgeos')"
       - name: Install rnaturalearthhires
         run: Rscript -e "install.packages('rnaturalearthhires', repos = 'http://packages.ropensci.org', type = 'source')"
       - name: Install Github packages
