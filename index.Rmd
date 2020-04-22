@@ -48,12 +48,13 @@ italy_total_last <- italy_total %>% dplyr::filter(date == max(date))
 
 italy_total <- italy_total %>% 
   dplyr::arrange(date) %>%
-  dplyr::mutate(tested_daily = total_tests - dplyr::lag(total_tests, n = 1)) %>%
-  dplyr::mutate(new_cases_smooth = (daily_positive_cases +
-                                    dplyr::lag(daily_positive_cases, n = 1) +
-                                    dplyr::lag(daily_positive_cases, n = 2) +
-                                    dplyr::lag(daily_positive_cases, n = 3) +
-                                    dplyr::lag(daily_positive_cases, n = 4)) / 5)
+  dplyr::mutate(tested_daily = total_tests - dplyr::lag(total_tests, n = 1),
+                daily_new_cases = c(NA,diff(italy_total$cumulative_cases))) %>%
+  dplyr::mutate(new_cases_smooth = (daily_new_cases +
+                                    dplyr::lag(daily_new_cases, n = 1) +
+                                    dplyr::lag(daily_new_cases, n = 2) +
+                                    dplyr::lag(daily_new_cases, n = 3) +
+                                    dplyr::lag(daily_new_cases, n = 4)) / 5)
 
 italy_total$tested_daily[1] <- italy_total$total_tests[1]
 
@@ -254,7 +255,7 @@ plotly::plot_ly(data = italy_total,
 ```{r}
 plotly::plot_ly(data = italy_total,
                 x = ~ date,
-                y = ~ daily_positive_cases,
+                y = ~ c(NA,diff(italy_total$cumulative_cases)),
                 type = "scatter",
                 mode = "markers",
                 name = "Positive Cases") %>%
