@@ -242,7 +242,7 @@ plotly::plot_ly(data = italy_total,
                 name = 'Intensive Care', 
                 fillcolor = '#9E0003') %>%
   plotly::layout(title = "",
-         legend = list(x = 0.1, y = 0.9),
+         legend = list(x = 0.05, y = 0.9),
          yaxis = list(title = "Number of Cases"),
          xaxis = list(title = "Source: Italy Department of Civil Protection"),
          hovermode = "compared")
