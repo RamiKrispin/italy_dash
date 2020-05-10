@@ -65,7 +65,7 @@ italy_total$tested_daily[1] <- italy_total$total_tests[1]
 library(coronavirus)
 data(coronavirus)
 
-df_china <- coronavirus %>% dplyr::filter(type == "confirmed", Country.Region == "China") %>%
+df_china <- coronavirus %>% dplyr::filter(type == "confirmed", country == "China") %>%
   dplyr::group_by(date) %>%
   dplyr::summarise(cases = sum(cases)) %>%
   dplyr::ungroup() %>%
@@ -78,7 +78,7 @@ df_china$index <- 1:nrow(df_china)
 head(df_china)
 
 
-df_us <- coronavirus %>% dplyr::filter(type == "confirmed", Country.Region == "US") %>%
+df_us <- coronavirus %>% dplyr::filter(type == "confirmed", country == "US") %>%
   dplyr::group_by(date) %>%
   dplyr::summarise(cases = sum(cases)) %>%
   dplyr::ungroup() %>%
@@ -91,7 +91,7 @@ df_us <- coronavirus %>% dplyr::filter(type == "confirmed", Country.Region == "U
 df_us$index <- 1:nrow(df_us)
 head(df_us)
 
-df_iran <- coronavirus %>% dplyr::filter(type == "confirmed", Country.Region == "Iran") %>%
+df_iran <- coronavirus %>% dplyr::filter(type == "confirmed", country == "Iran") %>%
   dplyr::group_by(date) %>%
   dplyr::summarise(cases = sum(cases)) %>%
   dplyr::ungroup() %>%
@@ -104,7 +104,7 @@ df_iran$index <- 1:nrow(df_iran)
 head(df_iran)
 
 
-df_sk <- coronavirus %>% dplyr::filter(type == "confirmed", Country.Region == "Korea, South") %>%
+df_sk <- coronavirus %>% dplyr::filter(type == "confirmed", country == "Korea, South") %>%
   dplyr::group_by(date) %>%
   dplyr::summarise(cases = sum(cases)) %>%
   dplyr::ungroup() %>%
@@ -117,7 +117,7 @@ df_sk$index <- 1:nrow(df_sk)
 head(df_sk)
 
 
-df_spain <- coronavirus %>% dplyr::filter(type == "confirmed", Country.Region == "Spain") %>%
+df_spain <- coronavirus %>% dplyr::filter(type == "confirmed", country == "Spain") %>%
   dplyr::group_by(date) %>%
   dplyr::summarise(cases = sum(cases)) %>%
   dplyr::ungroup() %>%
