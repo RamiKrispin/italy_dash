@@ -15,8 +15,6 @@ jobs:
         uses: actions/checkout@v2
         with: 
           ref: 'master'
-      - name: Install CRAN packages
-        run: Rscript -e "install.packages(c('devtools', 'rmarkdown', 'flexdashboard', 'dplyr', 'rnaturalearth'))"
       - name: Install dependencies
         run: Rscript -e "devtools::install_github('RamiKrispin/covid19Italy')" -e "devtools::install_github('RamiKrispin/coronavirus')"
       - name: Render the site
