@@ -22,10 +22,10 @@ jobs:
       - name: Push updates  
         if: success()
         run: |
-          if [[ "$(git status --porcelain)" != "" ]]; then
+          #if [[ "$(git status --porcelain)" != "" ]]; then
               git config --global user.name 'RamiKrispin'
               git config --global user.email 'ramkrisp@umich.edu'
-              git commit -am "Update italy province data"
+              git commit -am "Update the dashboard"
               git push
-          fi
+          #fi
       
