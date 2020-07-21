@@ -25,7 +25,7 @@ jobs:
           #if [[ "$(git status --porcelain)" != "" ]]; then
               git config --global user.name 'RamiKrispin'
               git config --global user.email 'ramkrisp@umich.edu'
-              git commit -am "Update the dashboard"
-              git push
+             # git commit -am "Update the dashboard"
+             # git push
           #fi
       
