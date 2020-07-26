@@ -13,9 +13,11 @@ output:
 #------------------ Packages ------------------
 library(flexdashboard)
 
-### Required the dev version from Github until the next release to CRAN
-library(covid19italy)
 `%>%` <- magrittr::`%>%`
+### Pulling most recent data from Github
+italy_region <- read.csv("https://raw.githubusercontent.com/RamiKrispin/covid19Italy/master/csv/italy_region.csv", stringsAsFactors = FALSE)
+italy_region$date <- as.Date(italy_region$date)
+
 #------------------ Parameters ------------------
 # Set colors
 # https://www.w3.org/TR/css-color-3/#svg-color
@@ -62,9 +64,8 @@ italy_total$tested_daily[1] <- italy_total$total_tests[1]
 
 
 #------------trajectory plot data prep------------
-library(coronavirus)
-data(coronavirus)
-
+coronavirus <- read.csv("https://raw.githubusercontent.com/RamiKrispin/coronavirus/master/csv/coronavirus.csv", stringsAsFactors = FALSE)
+coronavirus$date <- as.Date(coronavirus$date)
 df_china <- coronavirus %>% dplyr::filter(type == "confirmed", country == "China") %>%
   dplyr::group_by(date) %>%
   dplyr::summarise(cases = sum(cases)) %>%
