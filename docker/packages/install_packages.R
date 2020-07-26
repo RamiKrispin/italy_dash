@@ -18,7 +18,12 @@ pkg_list <- c("dplyr",
 
 install.packages(pkgs = pkg_list, repos = "https://cran.rstudio.com/")
 
-for(i in pkg_list){
+# Install covid19 packages
+devtools::install_github("Covid19R/covid19Italy")
+devtools::install_github("Covid19R/coronavirus")
+
+
+for(i in c(pkg_list, "covid19Italy", "coronavirus")){
 
   if(!i %in% rownames(installed.packages())){
     stop(paste("Package", i, "is not available"))

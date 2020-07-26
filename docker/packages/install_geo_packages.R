@@ -5,7 +5,7 @@ install.packages(pkgs = pkg_list, repos = "https://cran.rstudio.com/")
 
 install.packages("rnaturalearthhires", repos = "http://packages.ropensci.org", type = "source")
 
-for(i in pkg_list){
+for(i in c(pkg_list,"rnaturalearthhires")){
 
   if(!i %in% rownames(installed.packages())){
     stop(paste("Package", i, "is not available"))
