@@ -16,5 +16,5 @@ jobs:
         with: 
           ref: 'master'
       - name: Render Rmarkdown
-        run: bash ./bash/data_refresh.bs
+        run: bash ./bash/data_refresh.sh
       
