@@ -27,11 +27,11 @@ for(i in pkg_list){
 
 
 # Install covid19 packages
-devtools::install_github("Covid19R/covid19Italy")
+devtools::install_github("Covid19R/covid19italy")
 devtools::install_github("Covid19R/coronavirus")
 
 f <- FALSE
-for(i in c(pkg_list, "covid19Italy", "coronavirus")){
+for(i in c(pkg_list, "covid19italy", "coronavirus")){
 
   cat(i, "...")
   if(i %in% rownames(installed.packages())){
