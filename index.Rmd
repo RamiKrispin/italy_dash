@@ -18,6 +18,14 @@ library(flexdashboard)
 italy_region <- read.csv("https://raw.githubusercontent.com/RamiKrispin/covid19Italy/master/csv/italy_region.csv", stringsAsFactors = FALSE)
 italy_region$date <- as.Date(italy_region$date)
 
+
+
+italy_total <- read.csv("https://raw.githubusercontent.com/RamiKrispin/covid19Italy/master/csv/italy_total.csv", stringsAsFactors = FALSE)
+italy_total$date <- as.Date(italy_total$date)
+
+
+
+
 #------------------ Parameters ------------------
 # Set colors
 # https://www.w3.org/TR/css-color-3/#svg-color
