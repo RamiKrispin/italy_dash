@@ -15,17 +15,6 @@ jobs:
         uses: actions/checkout@v2
         with: 
           ref: 'master'
-      - name: Install dependencies
-        run: Rscript -e "devtools::install_github('RamiKrispin/covid19Italy')" -e "devtools::install_github('RamiKrispin/coronavirus')"
-      - name: Render the site
-        run: Rscript -e "rmarkdown::render_site()"
-      - name: Push updates  
-        if: success()
-        run: |
-          #if [[ "$(git status --porcelain)" != "" ]]; then
-              git config --global user.name 'RamiKrispin'
-              git config --global user.email 'ramkrisp@umich.edu'
-             # git commit -am "Update the dashboard"
-             # git push
-          #fi
+      - name: Render Rmarkdown
+        run: bash ./bash/data_refresh.bs
       
