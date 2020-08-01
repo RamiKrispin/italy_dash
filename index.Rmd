@@ -424,7 +424,7 @@ italy_total %>%
 About
 =======================================================================
 
-**The Coronavirus Dashboard**
+**The Covid19 Italy Dashboard**
 
 This Covid19 Italy dashboard provides an overview of the 2019 Novel Coronavirus COVID-19 (2019-nCoV) outbreak at Italy. This dashboard is built with R using the Rmakrdown framework and can easily reproduce by others. The code behind the dashboard available [here](https://github.com/RamiKrispin/italy_dash)
 
