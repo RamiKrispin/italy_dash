@@ -8,7 +8,7 @@ jobs:
     name: refresh the dashboard
     runs-on: ubuntu-18.04 
     container: 
-     image: rkrispin/covid19italy:dev
+     image: docker.io/rkrispin/covid19italy:prod.0.3.1
     steps:
       - name: checkout_repo
         uses: actions/checkout@v2
