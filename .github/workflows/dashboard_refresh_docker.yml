@@ -1,8 +1,8 @@
 name: Data Refresh
 
-on:
-  schedule:  
-    - cron:  '0 */8 * * *'
+on: [push, pull_request]
+ # schedule:  
+  #  - cron:  '0 */8 * * *'
 jobs:
   build:
     name: refresh the dashboard
