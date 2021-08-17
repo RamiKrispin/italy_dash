@@ -15,7 +15,8 @@ pkg_list <- c("dplyr",
               "ggplot2",
               "flexdashboard",
               "knitr",
-              "usethis")
+              "usethis",
+              "DT")
 for(i in pkg_list){
   if(!i %in% rownames(installed.packages())){
     install.packages(pkgs = i, repos = "https://cran.rstudio.com/")
