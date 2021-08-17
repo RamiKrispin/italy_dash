@@ -1,4 +1,4 @@
-FROM docker.io/rkrispin/covid19italy:prod.0.3.1
+FROM  docker.io/rkrispin/covid19italy_dash:dev
 
 ARG RSTUDIO_VERSION
 #ENV RSTUDIO_VERSION=${RSTUDIO_VERSION:-1.1.463}
